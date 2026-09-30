@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submission Sentinel</title>
+
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --primary: #4f46e5;
+      --border: #e4e7ec;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 18px 7%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--primary);
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    header h2 { margin: 0; font-size: 19px; }
+    header p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+
+    main {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px 50px;
+    }
+
+    .hero { margin-bottom: 28px; }
+
+    .eyebrow {
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+    }
+
+    h1 {
+      font-size: clamp(30px, 5vw, 44px);
+      letter-spacing: -1.5px;
+      margin: 10px 0;
+    }
+
+    .hero p {
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 650px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 22px;
+      box-shadow: 0 5px 20px rgba(16, 24, 40, .035);
+    }
+
+    h3 { margin: 0 0 8px; }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-weight: 650;
+      font-size: 14px;
+      margin: 22px 0 8px;
+    }
+
+    input[type="url"], input[type="file"] {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #d0d5dd;
+      border-radius: 9px;
+      background: white;
+      color: var(--text);
+      font: inherit;
+    }
+
+    .upload {
+      border: 2px dashed #c7c9f9;
+      background: #f8f8ff;
+      border-radius: 12px;
+      padding: 22px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 14px 20px;
+      background: var(--primary);
+      color: white;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 22px;
+      width: 100%;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .notice {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    #status {
+      display: none;
+      margin-bottom: 20px;
+      padding: 14px;
+      border-radius: 10px;
+      background: #eef2ff;
+      color: #3730a3;
+      white-space: pre-wrap;
+    }
+
+    #status.error {
+      background: #fef2f2;
+      color: #b42318;
+    }
+
+    #results { display: none; }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+      gap: 12px;
+      margin: 22px 0;
+    }
+
+    .metric {
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 27px;
+      margin-bottom: 5px;
+    }
+
+    .metric span { font-size: 12px; color: var(--muted); }
+
+    .compliant { color: #16803d; }
+    .noncompliant { color: #c62828; }
+    .partial { color: #a16207; }
+    .unverifiable { color: #596579; }
+
+    .finding {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 14px;
+    }
+
+    .finding h4 { margin: 12px 0; line-height: 1.5; }
+
+    .badge {
+      display: inline-block;
+      border-radius: 20px;
+      padding: 5px 9px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #f2f4f7;
+    }
+
+    .finding p {
+      font-size: 14px;
+      line-height: 1.65;
+      overflow-wrap: anywhere;
+    }
+
+    .finding p strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .actions { padding-left: 22px; }
+
+    .actions li {
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+
+    .download {
+      display: inline-block;
+      color: var(--primary);
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      background: white;
+      border: 1px solid var(--primary);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 24px;
+    }
+
+    @media (max-width: 600px) {
+      main { margin-top: 25px; padding: 0 14px 35px; }
+      .card { padding: 18px; }
+      header { padding: 14px 18px; }
+    }
+
+    /* PDF / Print layout */
+    @media print {
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+
+      body {
+        background: white !important;
+        color: black !important;
+        font-size: 10pt;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      header,
+      .hero,
+      #analyzeForm,
+      #status,
+      footer,
+      #downloadPdfButton {
+        display: none !important;
+      }
+
+      main {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #results {
+        display: block !important;
+      }
+
+      .card {
+        box-shadow: none;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        margin: 0 0 18px;
+      }
+
+      #reportHeader {
+        display: block !important;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #4f46e5;
+      }
+
+      #reportHeader h1 {
+        font-size: 23pt;
+        letter-spacing: normal;
+        margin: 5px 0;
+      }
+
+      #reportHeader p {
+        color: #555;
+        font-size: 9pt;
+        overflow-wrap: anywhere;
+      }
+
+      .eyebrow { color: #3730a3 !important; }
+
+      .summary {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7px;
+        margin: 14px 0 20px;
+      }
+
+      .metric {
+        padding: 9px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background: white !important;
+      }
+
+      .metric strong { font-size: 19pt; }
+      .metric span { font-size: 8pt; }
+
+      .finding {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 12px;
+        margin-top: 10px;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .finding p {
+        font-size: 9pt;
+        line-height: 1.5;
+        margin: 8px 0;
+      }
+
+      .finding h4 {
+        font-size: 11pt;
+        margin: 8px 0;
+      }
+
+      .badge {
+        border: 1px solid #bbb;
+        background: #f2f4f7 !important;
+        color: black !important;
+      }
+
+      .actions li {
+        font-size: 9pt;
+        margin: 8px 0;
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .compliant,
+      .noncompliant,
+      .partial,
+      .unverifiable {
+        color: black !important;
+      }
+
+      h2, h3 { break-after: avoid; page-break-after: avoid; }
+
+      .subtext { color: #444 !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">S</div>
+    <div>
+      <h2>Submission Sentinel</h2>
+      <p>Research Paper Compliance Assistant</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="eyebrow">AI-POWERED PAPER REVIEW</div>
+      <h1>Submit with confidence.</h1>
+      <p>
+        Check your research paper against conference submission guidelines.
+        Identify potential compliance issues before submitting your manuscript.
+      </p>
+    </section>
+
+    <section class="card">
+      <h3>Analyze your manuscript</h3>
+      <p class="subtext">
+        Upload your paper and provide the official conference guidelines URL.
+        PDF files up to 10 MB are supported.
+      </p>
+
+      <form id="analyzeForm">
+        <label for="pdf">Research paper (PDF)</label>
+        <div class="upload">
+          <input id="pdf" name="pdf" type="file"
+                 accept=".pdf,application/pdf" required>
+        </div>
+
+        <label for="submissionUrl">Conference guidelines URL</label>
+        <input id="submissionUrl" name="submission_url" type="url"
+               placeholder="https://conference.example/author-guidelines/"
+               required>
+
+        <button id="analyzeButton" type="submit">Analyze Paper →</button>
+
+        <p class="notice">
+          Your uploaded PDF is temporarily processed for analysis.
+          Results are not saved as a permanent history.
+        </p>
+      </form>
+    </section>
+
+    <div id="status" role="status" aria-live="polite"></div>
+
+    <section id="results">
+      <div class="card">
+        <div id="reportHeader" style="display:none">
+          <div class="eyebrow">SUBMISSION SENTINEL · COMPLIANCE REPORT</div>
+          <h1>Research Paper Compliance Report</h1>
+          <p id="reportDate"></p>
+          <p id="reportUrl"></p>
+        </div>
+
+        <div class="eyebrow">ANALYSIS COMPLETE</div>
+        <h2 id="paperTitle"></h2>
+        <p class="subtext" id="findingTotal"></p>
+        <div class="summary" id="summary"></div>
+
+        <button id="downloadPdfButton" type="button">
+          Download PDF Report
+        </button>
+      </div>
+
+      <div class="card">
+        <h3>Detailed findings</h3>
+        <p class="subtext">
+          Review the evidence and recommendations for each check.
+        </p>
+        <div id="findings"></div>
+      </div>
+
+      <div class="card">
+        <h3>Recommended action items</h3>
+        <p class="subtext">Suggested tasks to review before submission.</p>
+        <ol class="actions" id="actions"></ol>
+      </div>
+
+      <div class="card" id="disclaimer">
+        <p class="subtext">
+          This report contains AI-assisted compliance checks and may contain
+          errors. Verify critical requirements against the official conference
+          guidelines before submitting your manuscript.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Submission Sentinel · AI-assisted compliance checks can contain errors.
+    Always verify critical requirements against the official guidelines.
+  </footer>
+
+  <script>
+    const form = document.getElementById("analyzeForm");
+    const button = document.getElementById("analyzeButton");
+    const statusBox = document.getElementById("status");
+    const results = document.getElementById("results");
+    const pdfInput = document.getElementById("pdf");
+
+    let latestReport = null;
+
+    function showStatus(message, isError = false) {
+      statusBox.style.display = "block";
+      statusBox.classList.toggle("error", isError);
+      statusBox.textContent = message;
+    }
+
+    function addTextElement(parent, tag, text, className = "") {
+      const element = document.createElement(tag);
+      element.textContent = text ?? "";
+      if (className) element.className = className;
+      parent.appendChild(element);
+      return element;
+    }
+
+    function statusClass(status) {
+      if (status === "COMPLIANT") return "compliant";
+      if (status === "NON-COMPLIANT") return "noncompliant";
+      if (status === "PARTIALLY COMPLIANT") return "partial";
+      return "unverifiable";
+    }
+
+    function renderReport(report) {
+      document.getElementById("paperTitle").textContent =
+        report.paper_title || "Untitled paper";
+
+      document.getElementById("findingTotal").textContent =
+        `${report.total_findings ?? 0} findings generated`;
+
+      document.getElementById("reportDate").textContent =
+        `Generated on: ${new Date().toLocaleString()}`;
+
+      document.getElementById("reportUrl").textContent =
+        `Guidelines URL: ${document.getElementById("submissionUrl").value.trim()}`;
+
+      const summary = document.getElementById("summary");
+      summary.replaceChildren();
+
+      const metrics = [
+        ["COMPLIANT", "compliant"],
+        ["NON-COMPLIANT", "noncompliant"],
+        ["PARTIALLY COMPLIANT", "partial"],
+        ["UNVERIFIABLE", "unverifiable"]
+      ];
+
+      for (const [label, cssClass] of metrics) {
+        const metric = document.createElement("div");
+        metric.className = "metric";
+
+        addTextElement(
+          metric,
+          "strong",
+          String(report.status_counts?.[label] ?? 0),
+          cssClass
+        );
+
+        addTextElement(metric, "span", label);
+        summary.appendChild(metric);
+      }
+
+      const findingsContainer = document.getElementById("findings");
+      findingsContainer.replaceChildren();
+
+      for (const finding of report.findings || []) {
+        const card = document.createElement("article");
+        card.className = "finding";
+
+        addTextElement(
+          card,
+          "span",
+          finding.status || "UNVERIFIABLE",
+          `badge ${statusClass(finding.status)}`
+        );
+
+        addTextElement(
+          card,
+          "h4",
+          `Finding ${finding.finding_number}: ${finding.requirement || ""}`
+        );
+
+        addTextElement(
+          card,
+          "p",
+          `Category: ${finding.category || "Unspecified"}`
+        );
+
+        const guidelineEvidence = document.createElement("p");
+        addTextElement(guidelineEvidence, "strong", "Guidelines evidence");
+        addTextElement(
+          guidelineEvidence,
+          "span",
+          finding.guidelines_evidence || "Not provided."
+        );
+        card.appendChild(guidelineEvidence);
+
+        const paperEvidence = document.createElement("p");
+        addTextElement(paperEvidence, "strong", "Paper evidence");
+        addTextElement(
+          paperEvidence,
+          "span",
+          finding.paper_evidence || "Not provided."
+        );
+        card.appendChild(paperEvidence);
+
+        if (finding.recommendation) {
+          const recommendation = document.createElement("p");
+          addTextElement(recommendation, "strong", "Recommendation");
+          addTextElement(
+            recommendation,
+            "span",
+            finding.recommendation
+          );
+          card.appendChild(recommendation);
+        }
+
+        findingsContainer.appendChild(card);
+      }
+
+      const actionList = document.getElementById("actions");
+      actionList.replaceChildren();
+
+      for (const item of report.action_items || []) {
+        addTextElement(actionList, "li", item);
+      }
+
+      results.style.display = "block";
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const file = pdfInput.files[0];
+      const url = document.getElementById("submissionUrl").value.trim();
+
+      if (!file) {
+        showStatus("Please select a PDF file.", true);
+        return;
+      }
+
+      if (
+        !file.name.toLowerCase().endsWith(".pdf") ||
+        (file.type && file.type !== "application/pdf")
+      ) {
+        showStatus("Please select a PDF file.", true);
+        return;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        showStatus("The PDF must be 10 MB or smaller.", true);
+        return;
+      }
+
+      try {
+        const parsedUrl = new URL(url);
+
+        if (!["http:", "https:"].includes(parsedUrl.protocol)) {
+          throw new Error("Invalid protocol");
+        }
+      } catch {
+        showStatus("Please enter a valid HTTP or HTTPS guidelines URL.", true);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("pdf", file);
+      formData.append("submission_url", url);
+
+      button.disabled = true;
+      button.textContent = "Analyzing paper…";
+      results.style.display = "none";
+
+      showStatus("Analyzing your paper. This may take a minute or two…");
+
+      try {
+        const response = await fetch("/analyze", {
+          method: "POST",
+          body: formData
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || "Analysis failed.");
+        }
+
+        latestReport = data;
+        renderReport(data);
+        showStatus("Analysis completed successfully.");
+
+        results.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      } catch (error) {
+        showStatus(
+          error.message ||
+            "Unable to connect to the server. Please try again.",
+          true
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Analyze Paper →";
+      }
+    });
+
+    document.getElementById("downloadPdfButton").addEventListener("click", () => {
+      if (!latestReport) {
+        showStatus("Please analyze a paper before downloading a report.", true);
+        return;
+      }
+
+      document.title = "Submission-Sentinel-Compliance-Report";
+
+      // Opens the browser print dialog. Select "Save as PDF".
+      window.print();
+    });
+  </script>
+</body>
+</html>
