@@ -240,7 +240,7 @@ The evaluation is intended to focus on manuscript requirements rather than admin
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Technology               | Purpose                                           |
 | ------------------------ | ------------------------------------------------- |
