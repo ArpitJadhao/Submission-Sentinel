@@ -8,9 +8,12 @@ The goal is to help authors identify potential formatting and submission issues 
 
 <!-- Replace this placeholder with a screenshot of your application -->
 
-<!-- <p align="center">
-  <img src="docs/images/submission-sentinel-preview.png" alt="Submission Sentinel application preview" width="850"/>
-</p> -->
+<p align="center">
+  <img src="frontend/Screenshot 2026-10-01 131236.png" alt="Submission Sentinel application preview" width="850"/>
+</p>
+<p align="center">
+  <img src="frontend/Screenshot 2026-10-01 131254.png" alt="Submission Sentinel application preview" width="850"/>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python" alt="Python"/>
