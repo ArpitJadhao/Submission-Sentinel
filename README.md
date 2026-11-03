@@ -485,7 +485,7 @@ Submission Sentinel is an AI-assisted review tool. It does not guarantee accepta
 
 **Arpit Jadhao**
 
-Computer Technology Student | AI & Machine Learning | LangChain | Python | DevOps | CI/CD
+Computer Technology Student | AI & Machine Learning | LangChain | Python | DevOps
 
 * GitHub: [@ArpitJadhao](https://github.com/ArpitJadhao)
 
